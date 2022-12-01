@@ -9,6 +9,7 @@ fn main() {
     let chunks: Vec<&str> = contents.split("\n\n").collect();
 
     let mut max = 0;
+    let mut max_array: [i32; 3] = [0; 3];
 
     for chunk in chunks.into_iter() {
         let energies: Vec<&str> = chunk.split("\n").collect();
@@ -21,7 +22,15 @@ fn main() {
         if sum > max {
             max = sum;
         }
+
+        let current_min = max_array.into_iter().min().unwrap();
+        if sum > current_min {
+            let index = max_array.iter().position(|&r| r == current_min).unwrap();
+            max_array[index] = sum;
+        }
     }
 
-    println!("Max: {:?}", max);
+    let total_sum: i32 = max_array.iter().sum();
+    println!("Max: {:?}", max_array);
+    println!("Max 3 Sum: {:?}", total_sum)
 }
