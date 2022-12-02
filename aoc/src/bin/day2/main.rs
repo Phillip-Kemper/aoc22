@@ -1,5 +1,8 @@
 //use std::env;
-use std::fs;
+use std::{
+    fs,
+    process::{self, exit},
+};
 
 fn main() {
     let file_path = "day2/day2.txt";
@@ -14,9 +17,13 @@ fn main() {
         let choices: Vec<&str> = round.split(" ").collect();
 
         let opponent_choice = choices.first().unwrap();
+
         let proposed_choice = choices.last().unwrap();
-        println!("Choice 1: {:?}", opponent_choice);
-        println!("Choice 2: {:?}", proposed_choice);
+
+        // println!(
+        //     "{:?}",
+        //     get_score_for_round(opponent_choice, proposed_choice)
+        // );
 
         total_sum = total_sum + get_score_for_round(opponent_choice, proposed_choice);
     }
@@ -25,13 +32,18 @@ fn main() {
 }
 
 fn get_score_for_round(opponent_choice: &str, proposed_choice: &str) -> i32 {
-    let mut score = get_choice_score(proposed_choice);
+    let mut score = 0;
+    println!("Choice 1: {:?}", opponent_choice);
+    println!("Choice 2: {:?}", proposed_choice);
+    println!(
+        "Generated Choice: {:?}",
+        convert_player_b_choice_task2(opponent_choice, proposed_choice)
+    );
 
+    let generated_choice = convert_player_b_choice_task2(opponent_choice, proposed_choice);
     score = score
-        + calculate_rock_paper_scissors_result(
-            opponent_choice,
-            convert_player_b_choice(proposed_choice),
-        );
+        + calculate_rock_paper_scissors_result(opponent_choice, generated_choice)
+        + get_choice_score(generated_choice);
 
     score
 }
@@ -45,11 +57,30 @@ fn convert_player_b_choice(choice: &str) -> &str {
     }
 }
 
+fn convert_player_b_choice_task2<'a>(choice_a: &'a str, choice_b: &'a str) -> &'a str {
+    match choice_b {
+        "X" => match choice_a {
+            "A" => "C",
+            "B" => "A",
+            "C" => "B",
+            _ => "A",
+        },
+        "Y" => choice_a.clone(),
+        "Z" => match choice_a {
+            "A" => "B",
+            "B" => "C",
+            "C" => "A",
+            _ => "A",
+        },
+        _ => "A",
+    }
+}
+
 fn get_choice_score(choice: &str) -> i32 {
     match choice {
-        "X" => 1,
-        "Y" => 2,
-        "Z" => 3,
+        "A" => 1,
+        "B" => 2,
+        "C" => 3,
         _ => 0,
     }
 }
