@@ -17,28 +17,53 @@ fn main() {
         let proposed_choice = choices.last().unwrap();
         println!("Choice 1: {:?}", opponent_choice);
         println!("Choice 2: {:?}", proposed_choice);
+
+        total_sum = total_sum + get_score_for_round(opponent_choice, proposed_choice);
     }
 
-    // for chunk in chunks.into_iter() {
-    //     let energies: Vec<&str> = chunk.split("\n").collect();
-    //     println!("{:?}", energies);
-    //     let mut sum = 0;
-    //     for number in energies.into_iter() {
-    //         let num: i32 = number.parse().unwrap();
-    //         sum = sum + num;
-    //     }
-    //     if sum > max {
-    //         max = sum;
-    //     }
+    println!("Total Sum: {:?}", total_sum);
+}
 
-    //     let current_min = max_array.into_iter().min().unwrap();
-    //     if sum > current_min {
-    //         let index = max_array.iter().position(|&r| r == current_min).unwrap();
-    //         max_array[index] = sum;
-    //     }
-    // }
+fn get_score_for_round(opponent_choice: &str, proposed_choice: &str) -> i32 {
+    let mut score = get_choice_score(proposed_choice);
 
-    // let total_sum: i32 = max_array.iter().sum();
-    // println!("Max: {:?}", max_array);
-    // println!("Max 3 Sum: {:?}", total_sum)
+    score = score
+        + calculate_rock_paper_scissors_result(
+            opponent_choice,
+            convert_player_b_choice(proposed_choice),
+        );
+
+    score
+}
+
+fn convert_player_b_choice(choice: &str) -> &str {
+    match choice {
+        "X" => "A",
+        "Y" => "B",
+        "Z" => "C",
+        _ => "A",
+    }
+}
+
+fn get_choice_score(choice: &str) -> i32 {
+    match choice {
+        "X" => 1,
+        "Y" => 2,
+        "Z" => 3,
+        _ => 0,
+    }
+}
+fn calculate_rock_paper_scissors_result(choice_a: &str, choice_b: &str) -> i32 {
+    if choice_a.eq(choice_b) {
+        return 3;
+    }
+
+    if (choice_a.eq("A") && choice_b.eq("B"))
+        || (choice_a.eq("B") && choice_b.eq("C"))
+        || choice_a.eq("C") && choice_b.eq("A")
+    {
+        return 6;
+    } else {
+        return 0;
+    }
 }
