@@ -1,8 +1,4 @@
-//use std::env;
-use std::{
-    fs,
-    process::{self, exit},
-};
+use std::fs;
 
 fn main() {
     let file_path = "day2/day2.txt";
