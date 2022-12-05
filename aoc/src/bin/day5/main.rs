@@ -38,7 +38,14 @@ fn main() {
         initial_state[to - 1] = temp_initial_state_to
             .into_iter()
             .rev()
-            .chain(temp_initial_state_from.clone().into_iter().take(amount))
+            .chain(
+                temp_initial_state_from
+                    .clone()
+                    .into_iter()
+                    .take(amount)
+                    // this rev is for part 2
+                    .rev(),
+            )
             .rev()
             .collect();
         // .collect::<Vec<&str>>()
