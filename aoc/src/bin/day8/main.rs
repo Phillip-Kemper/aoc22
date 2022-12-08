@@ -16,19 +16,12 @@ fn main() {
         })
         .collect();
 
-    // println!(
-    //     "Rows: {:?}",
-    //     columns
-    //         .clone()
-    //         .into_iter()
-    //         .map(|str| { str.chars().rev().collect() })
-    //         .collect::<Vec<String>>()
-    // );
-    // exit(1);
+    let max_viewing_distance = check_max_viewing_distance(rows.clone(), columns.clone());
+    println!("Max distance {:?}", max_viewing_distance);
 
-    let mut visible_trees = check_forest(rows.clone(), columns.clone());
+    // let mut visible_trees = check_forest(rows.clone(), columns.clone());
 
-    println!("Visible Trees: {:?} ", visible_trees);
+    // println!("Visible Trees: {:?} ", visible_trees);
 }
 
 fn is_visible_from_side(row: &str, index: usize, tree_height: u32) -> bool {
@@ -84,4 +77,74 @@ fn check_forest(rows: Vec<&str>, columns: Vec<String>) -> i32 {
         }
     }
     visible_trees
+}
+
+fn check_max_viewing_distance(rows: Vec<&str>, columns: Vec<String>) -> u32 {
+    let mut max_distance = 0;
+    for (row_index, row) in rows.iter().enumerate().skip(1) {
+        for (column_index, tree_height) in row.clone().chars().enumerate().skip(1) {
+            println!(
+                "Checking Column: {:?} Row: {:?}, Tree: {:?}",
+                column_index, row_index, tree_height
+            );
+
+            let mut viewing_distance = 1;
+            //get viewing distance
+
+            println!("{:?}", row);
+            viewing_distance *=
+                get_viewing_distance(row, column_index, tree_height.to_digit(10).unwrap());
+
+            println!("{:?}", columns[column_index]);
+            viewing_distance *= get_viewing_distance(
+                &*columns[column_index],
+                row_index,
+                tree_height.to_digit(10).unwrap(),
+            );
+
+            println!("{:?}", row.chars().rev().collect::<String>());
+            viewing_distance *= get_viewing_distance(
+                &*(row.chars().rev().collect::<String>()),
+                row.len() - column_index - 1,
+                tree_height.to_digit(10).unwrap(),
+            );
+
+            println!(
+                "{:?}",
+                &*columns[column_index].chars().rev().collect::<String>()
+            );
+            viewing_distance *= get_viewing_distance(
+                &*((&*columns[column_index]).chars().rev().collect::<String>()),
+                row.len() - row_index - 1,
+                tree_height.to_digit(10).unwrap(),
+            );
+
+            if viewing_distance > max_distance {
+                println!("yes");
+                max_distance = viewing_distance;
+            }
+        }
+    }
+    max_distance
+}
+
+fn get_viewing_distance(row: &str, index: usize, value: u32) -> u32 {
+    println!("{:?}", value);
+    println!("{:?}", index);
+    let mut viewing_distance = 0;
+    if (index == row.len()) {
+        return 0;
+    }
+
+    let mut iteri = row.chars().skip(index + 1).into_iter().peekable();
+    while let Some(el) = iteri.next() {
+        viewing_distance += 1;
+        if value <= (el.to_digit(10).unwrap()) {
+            println!("nop");
+            break;
+        }
+    }
+
+    println!("viewing distance: {:?}", viewing_distance);
+    viewing_distance
 }
